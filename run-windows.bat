@@ -4,6 +4,9 @@ REM ============================================
 REM Card Generator - Windows Quick Start Script
 REM ============================================
 
+REM Trap errors and ensure window stays open
+set "SCRIPT_EXIT_CODE=0"
+
 REM Create log file with timestamp
 set "LOG_FILE=run-log.txt"
 echo ============================================ > "%LOG_FILE%"
@@ -46,8 +49,11 @@ if errorlevel 1 (
     echo.
     echo Check the log file for details: %LOG_FILE%
     echo.
-    pause
-    exit /b 1
+    echo Press any key to exit...
+    pause >nul
+    if errorlevel 1 pause
+    set "SCRIPT_EXIT_CODE=1"
+    goto :script_end
 )
 
 REM Display Node.js version
@@ -59,32 +65,56 @@ echo. >> "%LOG_FILE%"
 REM Check if npm is available
 echo [STEP 2/6] Checking npm installation...
 echo [STEP 2/6] Checking npm installation... >> "%LOG_FILE%"
-where npm >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] npm is not installed or not in PATH.
-    echo Please install Node.js (which includes npm) from https://nodejs.org/
+echo [DEBUG] About to test npm command... >> "%LOG_FILE%"
+
+REM Try to get npm version - if this fails, npm isn't working
+echo [DEBUG] Attempting to run: npm --version >> "%LOG_FILE%"
+npm --version >nul 2>&1
+set "NPM_RESULT=%ERRORLEVEL%"
+echo [DEBUG] npm --version returned: %NPM_RESULT% >> "%LOG_FILE%"
+
+if %NPM_RESULT% NEQ 0 (
+    echo [ERROR] npm command failed!
     echo.
-    echo [ERROR] npm is not installed or not in PATH. >> "%LOG_FILE%"
-    echo Please install Node.js (which includes npm) from https://nodejs.org/ >> "%LOG_FILE%"
+    echo [ERROR] npm command failed! >> "%LOG_FILE%"
+    echo Attempting to diagnose... >> "%LOG_FILE%"
+    
+    REM Try to see what happens when we run npm
+    echo Testing npm command output: >> "%LOG_FILE%"
+    npm --version >> "%LOG_FILE%" 2>&1
     echo. >> "%LOG_FILE%"
+    
+    echo ============================================
+    echo ERROR: npm not working!
+    echo ============================================
+    echo.
+    echo Node.js is installed (v24.12.0), but npm is not working.
+    echo This is unusual - npm should come with Node.js.
+    echo.
+    echo Possible solutions:
+    echo 1. Reinstall Node.js from https://nodejs.org/
+    echo 2. Check if npm is in your PATH
+    echo 3. Check the log file for more details: %LOG_FILE%
+    echo.
     echo ============================================ >> "%LOG_FILE%"
     echo Script failed at: %DATE% %TIME% >> "%LOG_FILE%"
     echo ============================================ >> "%LOG_FILE%"
     echo.
-    echo ============================================
-    echo ERROR: npm not found!
-    echo ============================================
-    echo.
-    echo Check the log file for details: %LOG_FILE%
-    echo.
-    pause
-    exit /b 1
+    echo Press any key to exit...
+    pause >nul
+    if errorlevel 1 pause
+    set "SCRIPT_EXIT_CODE=1"
+    goto :script_end
 )
 
 REM Show npm version
+echo [INFO] npm version:
+echo [DEBUG] About to display npm version... >> "%LOG_FILE%"
+npm --version
 npm --version >> "%LOG_FILE%" 2>&1
-echo [SUCCESS] npm found
-echo [SUCCESS] npm found >> "%LOG_FILE%"
+echo [SUCCESS] npm found and working
+echo [SUCCESS] npm found and working >> "%LOG_FILE%"
+echo [DEBUG] Continuing to next step... >> "%LOG_FILE%"
 echo.
 echo. >> "%LOG_FILE%"
 
@@ -115,8 +145,11 @@ if not exist "node_modules" (
         echo.
         echo Check the log file for details: %LOG_FILE%
         echo.
-        pause
-        exit /b 1
+        echo Press any key to exit...
+        pause >nul
+        if errorlevel 1 pause
+        set "SCRIPT_EXIT_CODE=1"
+        goto :script_end
     )
     echo.
     echo [SUCCESS] Dependencies installed successfully!
@@ -175,8 +208,11 @@ if errorlevel 1 (
     echo.
     echo Check the log file for details: %LOG_FILE%
     echo.
-    pause
-    exit /b 1
+    echo Press any key to exit...
+    pause >nul
+    if errorlevel 1 pause
+    set "SCRIPT_EXIT_CODE=1"
+    goto :script_end
 )
 echo [SUCCESS] Prisma client generated successfully.
 echo [SUCCESS] Prisma client generated successfully. >> "%LOG_FILE%"
@@ -203,8 +239,11 @@ if errorlevel 1 (
     echo.
     echo Check the log file for details: %LOG_FILE%
     echo.
-    pause
-    exit /b 1
+    echo Press any key to exit...
+    pause >nul
+    if errorlevel 1 pause
+    set "SCRIPT_EXIT_CODE=1"
+    goto :script_end
 )
 echo [SUCCESS] Database initialized successfully.
 echo [SUCCESS] Database initialized successfully. >> "%LOG_FILE%"
@@ -238,7 +277,23 @@ REM If we get here, the server stopped
 echo. >> "%LOG_FILE%"
 echo Server stopped at: %DATE% %TIME% >> "%LOG_FILE%"
 echo Exit code: %SERVER_EXIT_CODE% >> "%LOG_FILE%"
+set "SCRIPT_EXIT_CODE=%SERVER_EXIT_CODE%"
+goto :script_end
+
+:script_end
 echo.
-echo Server stopped. Logs saved to: %LOG_FILE%
-pause
-exit /b %SERVER_EXIT_CODE%
+echo ============================================
+if %SCRIPT_EXIT_CODE% NEQ 0 (
+    echo Script completed with errors.
+    echo Exit code: %SCRIPT_EXIT_CODE%
+) else (
+    echo Script completed successfully.
+)
+echo ============================================
+echo.
+echo Logs saved to: %LOG_FILE%
+echo.
+echo Press any key to close this window...
+pause >nul
+if errorlevel 1 pause
+exit /b %SCRIPT_EXIT_CODE%
