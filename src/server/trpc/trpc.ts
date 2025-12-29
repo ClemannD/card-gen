@@ -4,28 +4,21 @@
  * This file sets up the tRPC instance and defines reusable procedures.
  *
  * Available Procedures:
- * - publicProcedure: No authentication required
- * - protectedProcedure: Requires authenticated user
- *
- * Usage:
- * Import these procedures to build your API routes
+ * - publicProcedure: Used for all operations (no auth needed for local tool)
  */
 
-import { initTRPC, TRPCError } from "@trpc/server";
+import { initTRPC } from "@trpc/server";
 import SuperJSON from "superjson";
 import { ZodError } from "zod";
-import { createAuthContext } from "../auth/auth-context";
-import { requireAuth } from "../auth/auth-utils";
+import { prisma } from "../prisma";
 
 /**
  * Creates the tRPC context for each request
- * This runs before every tRPC procedure
+ * Provides database access to all procedures
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const authContext = await createAuthContext();
-
   return {
-    ...authContext,
+    db: prisma,
     headers: opts.headers,
   };
 };
@@ -63,28 +56,6 @@ export const createTRPCRouter = t.router;
 /**
  * Public Procedure
  * ===============
- * Can be called by anyone, authenticated or not
- * Use for: public endpoints, health checks, etc.
+ * Used for all operations since this is a local-only tool
  */
 export const publicProcedure = t.procedure;
-
-/**
- * Protected Procedure
- * ==================
- * Requires an authenticated user
- * Automatically validates that ctx.user is not null
- * Throws UNAUTHORIZED error if no user is found
- *
- * Use for: user-specific operations
- */
-export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
-  requireAuth(ctx.user);
-
-  return next({
-    ctx: {
-      // Infers that user is non-null
-      user: ctx.user,
-      session: ctx.session,
-    },
-  });
-});

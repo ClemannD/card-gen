@@ -6,26 +6,19 @@
  * To add a new router:
  * 1. Import it from src/server/routes/
  * 2. Add it to the router object below
- *
- * Example:
- * import { notesRouter } from "../routes/notes/notes.router";
- *
- * export const appRouter = createTRPCRouter({
- *   notes: notesRouter,
- * });
  */
 
-import { createCallerFactory, createTRPCRouter } from "./trpc";
-import { notesRouter } from "../routes/notes/notes.router";
-import { accountRouter } from "../routes/account/account.router";
+import { createCallerFactory, createTRPCRouter } from './trpc';
+import { configRouter } from '../routes/config/config.router';
+import { automationRouter } from '../routes/automation/automation.router';
 
 /**
  * Main application router
  * All feature routers are combined here
  */
 export const appRouter = createTRPCRouter({
-  notes: notesRouter,
-  account: accountRouter,
+  config: configRouter,
+  automation: automationRouter,
 });
 
 /**

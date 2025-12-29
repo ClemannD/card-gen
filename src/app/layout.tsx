@@ -4,8 +4,8 @@ import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'Clemann Next Starter',
-  description: 'A Next.js starter with tRPC, Prisma, and Better Auth',
+  title: 'Playwright Automation',
+  description: 'Local automation tool with Playwright',
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

@@ -1,5 +1,5 @@
-// This is your Prisma schema file
-// Learn more: https://pris.ly/d/prisma-schema
+// Playwright Automation Schema
+// ============================
 
 generator client {
   provider = "prisma-client-js"
@@ -7,96 +7,37 @@ generator client {
 }
 
 // Database Configuration
-// ====================
-// Currently using SQLite for simplicity
-// To switch databases:
-// 1. Change the provider below (postgresql, mysql, mongodb, etc.)
-// 2. Update the DATABASE_URL in your .env file
-// 3. Run: npx prisma generate && npx prisma db push
+// Using SQLite for portability (single file, no server needed)
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-// Authentication Models
-// ====================
-// These models are required by better-auth
-// Do not modify these unless you know what you're doing
+// Automation Models
+// =================
 
-model User {
-  id            String   @id @default(cuid())
-  name          String?
-  email         String   @unique
-  emailVerified Boolean  @default(false)
-  image         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  sessions Session[]
-  accounts Account[]
-  notes    Note[] // Application-specific relation
-}
-
-model Session {
+/// Configuration for automation scripts
+model Config {
   id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
+  name      String
+  settings  String   // JSON blob for flexible config storage
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+  runs      Run[]
 }
 
-model Account {
-  id                    String    @id @default(cuid())
-  accountId             String? // Account identifier (used by better-auth)
-  userId                String
-  providerId            String
-  providerAccountId     String?
-  accessToken           String?
-  refreshToken          String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String? // For email/password authentication
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+/// Record of automation script executions
+model Run {
+  id        String    @id @default(cuid())
+  configId  String
+  status    String    // pending, running, success, error
+  output    String    @default("") // Captured console output
+  error     String?   // Error message if failed
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  config Config @relation(fields: [configId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, providerAccountId])
-  @@index([userId])
-}
-
-model Verification {
-  id         String   @id @default(cuid())
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@unique([identifier, value])
-}
-
-// Application Models
-// ==================
-// Add your application-specific models below
-
-model Note {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+  @@index([configId])
+  @@index([status])
 }

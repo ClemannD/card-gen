@@ -42,3 +42,6 @@ next-env.d.ts
 /.generated/prisma
 
 prisma/dev.db
+
+# Auth state for Playwright automation
+/.auth
