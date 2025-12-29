@@ -9,8 +9,6 @@
  */
 
 import { createCallerFactory, createTRPCRouter } from './trpc';
-import { configRouter } from '../routes/config/config.router';
-import { automationRouter } from '../routes/automation/automation.router';
 import { cardsRouter } from '../routes/cards/cards.router';
 import { settingsRouter } from '../routes/settings/settings.router';
 
@@ -19,8 +17,6 @@ import { settingsRouter } from '../routes/settings/settings.router';
  * All feature routers are combined here
  */
 export const appRouter = createTRPCRouter({
-  config: configRouter,
-  automation: automationRouter,
   cards: cardsRouter,
   settings: settingsRouter,
 });

@@ -35,7 +35,6 @@ import {
 import {
   CreditCard,
   Settings,
-  History,
   Plus,
   Download,
   Trash2,
@@ -348,12 +347,6 @@ export default function CardsPage() {
                   <Link href="/settings" className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
                     Settings
-                  </Link>
-                </Button>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/runs" className="flex items-center gap-2">
-                    <History className="h-4 w-4" />
-                    History
                   </Link>
                 </Button>
               </nav>

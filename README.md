@@ -1,21 +1,21 @@
-# Playwright Automation Tool
+# Card Generator
 
-A local automation tool built with Next.js, tRPC, Prisma, and Playwright. Run browser automation scripts with a web UI for managing configurations and viewing output.
+A card generation tool built with Next.js, tRPC, Prisma, and Airwallex API. Create virtual cards programmatically with a web UI.
 
 ## Features
 
-- **Web UI Dashboard** - Manage configurations and view run history
-- **Playwright Integration** - Browser automation with full Playwright capabilities
-- **SQLite Database** - Portable config and run history storage
+- **Web UI Dashboard** - Create and manage virtual cards
+- **Airwallex API Integration** - Direct API integration for card creation
+- **SQLite Database** - Portable card storage
 - **Type-Safe API** - End-to-end type safety with tRPC
-- **Real-time Output** - View automation logs and errors
+- **Card Management** - View and manage created cards
 
 ## Tech Stack
 
 - **Next.js 15** - React framework with App Router
 - **tRPC** - Type-safe API layer
 - **Prisma** - Database ORM with SQLite
-- **Playwright** - Browser automation
+- **Airwallex API** - Card issuing API
 - **Tailwind CSS** - Styling
 - **shadcn/ui** - UI components
 
@@ -23,12 +23,32 @@ A local automation tool built with Next.js, tRPC, Prisma, and Playwright. Run br
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or pnpm
+- Node.js 18+ ([Download here](https://nodejs.org/))
+- npm (included with Node.js)
+- Airwallex API credentials (optional - can be configured later in Settings)
 
-### Installation
+### Quick Start (Windows) 🪟
 
-1. Clone or copy this project to your Windows machine
+**One-click setup and run:**
+
+1. Double-click `run-windows.bat` (or right-click `run-windows.ps1` → Run with PowerShell)
+
+The script will automatically:
+- ✅ Check for Node.js installation
+- ✅ Install all dependencies
+- ✅ Create `.env` file with default settings
+- ✅ Initialize the database
+- ✅ Start the development server
+
+2. Open http://localhost:3000 in your browser
+
+**That's it!** The app is now running. Press `Ctrl+C` in the terminal to stop.
+
+**For production builds on Windows:** Double-click `build-windows.bat` to build and run in production mode.
+
+### Manual Installation (All Platforms)
+
+1. Clone or copy this project
 
 2. Install dependencies:
    ```bash
@@ -37,55 +57,40 @@ A local automation tool built with Next.js, tRPC, Prisma, and Playwright. Run br
 
 3. Create a `.env` file:
    ```bash
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL="file:./prisma/dev.db"
+   NODE_ENV=development
+   PORT=3000
    ```
 
 4. Initialize the database:
    ```bash
+   npm run prisma-generate
    npm run prisma-push
    ```
 
-5. Install Playwright browsers:
-   ```bash
-   npx playwright install chromium
-   ```
-
-6. Start the development server:
+5. Start the development server:
    ```bash
    npm run dev
    ```
 
-7. Open http://localhost:3000
+6. Open http://localhost:3000
+
+7. Configure Airwallex API credentials in Settings (optional - can be done later)
 
 ## Usage
 
-### Create a Configuration
+### Configure API Settings
 
-1. Go to **Configs** → **New Config**
-2. Enter a name and any JSON settings your script needs
-3. Save the configuration
+1. Go to **Settings**
+2. Enter your Airwallex Client ID, API Key, Environment, and Cardholder ID
+3. Save the settings
 
-### Run Automation
+### Create Cards
 
-1. Open a configuration
-2. Click **Run Now**
-3. View the output in the run details page
-
-### Customize Automation Scripts
-
-Edit `src/automation/runner.ts` to modify the automation logic:
-
-```typescript
-export async function exampleScript(page: Page, collector: OutputCollector): Promise<void> {
-  collector.log('Navigating to website...');
-  await page.goto('https://example.com');
-  
-  // Your automation logic here
-  await page.click('button#submit');
-  
-  collector.log('Done!');
-}
-```
+1. Go to **Cards** → **New Card**
+2. Enter the number of cards to create
+3. Optionally set a nickname prefix and transaction limit
+4. Click **Create Cards**
 
 ## Project Structure
 
@@ -93,21 +98,20 @@ export async function exampleScript(page: Page, collector: OutputCollector): Pro
 src/
 ├── app/                    # Next.js pages
 │   ├── page.tsx           # Dashboard
-│   ├── configs/           # Config management
-│   └── runs/              # Run history
-├── automation/            # Playwright scripts
-│   └── runner.ts          # Script execution
+│   ├── cards/             # Card management
+│   └── settings/          # Settings
 ├── server/
 │   ├── routes/
-│   │   ├── config/        # Config CRUD
-│   │   └── automation/    # Run scripts
+│   │   ├── cards/         # Card CRUD
+│   │   ├── settings/      # Settings management
+│   │   └── services/      # Airwallex API service
 │   └── trpc/              # tRPC setup
 └── components/            # UI components
 ```
 
-## Deployment (Windows)
+## Production Deployment
 
-For production use on Windows:
+For production use:
 
 1. Build the application:
    ```bash

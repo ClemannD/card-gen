@@ -18,7 +18,6 @@ import { ModeToggle } from '@/components/mode-toggle';
 import {
   Settings,
   CreditCard,
-  History,
   Save,
   Loader2,
   CheckCircle,
@@ -107,12 +106,6 @@ export default function SettingsPage() {
                   <Link href="/cards" className="flex items-center gap-2">
                     <CreditCard className="h-4 w-4" />
                     Cards
-                  </Link>
-                </Button>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/runs" className="flex items-center gap-2">
-                    <History className="h-4 w-4" />
-                    History
                   </Link>
                 </Button>
               </nav>

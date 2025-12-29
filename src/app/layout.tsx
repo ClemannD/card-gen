@@ -4,8 +4,8 @@ import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'Playwright Automation',
-  description: 'Local automation tool with Playwright',
+  title: 'Card Generator',
+  description: 'Card generation tool with Airwallex API',
 };
 
 export default function RootLayout({

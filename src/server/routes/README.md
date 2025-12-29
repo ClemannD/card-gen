@@ -6,20 +6,18 @@ This directory contains all tRPC routers and their procedures.
 
 ```
 routes/
-├── config/              # Configuration management
-│   ├── config.router.ts
+├── cards/               # Card management
+│   ├── cards.router.ts
 │   └── procedures/
-│       ├── list-configs.procedure.ts
-│       ├── get-config.procedure.ts
-│       ├── create-config.procedure.ts
-│       ├── update-config.procedure.ts
-│       └── delete-config.procedure.ts
-└── automation/          # Automation execution
-    ├── automation.router.ts
-    └── procedures/
-        ├── run-script.procedure.ts
-        ├── list-runs.procedure.ts
-        └── get-run.procedure.ts
+│       ├── create-cards.procedure.ts
+│       ├── list-cards.procedure.ts
+│       └── delete-card.procedure.ts
+├── settings/            # Settings management
+│   ├── settings.router.ts
+│   └── procedures/
+│       ├── get-settings.procedure.ts
+│       ├── update-settings.procedure.ts
+│       └── list-cardholders.procedure.ts
 ```
 
 ## Adding New Routes

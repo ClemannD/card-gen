@@ -1,5 +1,5 @@
-// Playwright Automation Schema
-// ============================
+// Card Generation Schema
+// ======================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,35 +11,6 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-// Automation Models
-// =================
-
-/// Configuration for automation scripts
-model Config {
-  id        String   @id @default(cuid())
-  name      String
-  settings  String   // JSON blob for flexible config storage
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  runs      Run[]
-}
-
-/// Record of automation script executions
-model Run {
-  id        String    @id @default(cuid())
-  configId  String
-  status    String    // pending, running, success, error
-  output    String    @default("") // Captured console output
-  error     String?   // Error message if failed
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-
-  config Config @relation(fields: [configId], references: [id], onDelete: Cascade)
-
-  @@index([configId])
-  @@index([status])
 }
 
 // App Settings
