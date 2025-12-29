@@ -1,0 +1,69 @@
+---
+description: 
+globs: *.tsx
+alwaysApply: false
+---
+# React Component Standards
+
+## Function Component Definition
+
+React function components should follow these patterns:
+
+### Main Component Export
+- Use `export default function ComponentName() {}` for the primary component in a file
+- Avoid arrow functions for main exports: `const ComponentName = () => {}` ❌
+
+### Prop Types
+- Define prop types inline within the function parameter
+- Avoid separate interface definitions for prop types
+- Use destructuring with inline types
+
+### Examples
+
+✅ **Correct:**
+```tsx
+export default function UserCard({ 
+  name, 
+  email, 
+  isActive = false 
+}: { 
+  name: string; 
+  email: string; 
+  isActive?: boolean; 
+}) {
+  return (
+    <div className="card">
+      <h2>{name}</h2>
+      <p>{email}</p>
+      {isActive && <span>Active</span>}
+    </div>
+  );
+}
+```
+
+❌ **Incorrect:**
+```tsx
+interface UserCardProps {
+  name: string;
+  email: string;
+  isActive?: boolean;
+}
+
+const UserCard = ({ name, email, isActive = false }: UserCardProps) => {
+  return (
+    <div className="card">
+      <h2>{name}</h2>
+      <p>{email}</p>
+      {isActive && <span>Active</span>}
+    </div>
+  );
+};
+
+export default UserCard;
+```
+
+### Additional Guidelines
+- Use kebab-case for file names (e.g., `user-card.tsx`)
+- Component names should be PascalCase
+- Prefer explicit prop destructuring with default values
+- No "barrel" index files for exports
