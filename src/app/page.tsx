@@ -12,11 +12,12 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ModeToggle } from '@/components/mode-toggle';
-import { Play, Settings, History, Plus, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Play, Settings, History, Plus, CheckCircle, XCircle, Clock, CreditCard, Cog } from 'lucide-react';
 
 export default function Dashboard() {
   const { data: configs, isLoading: configsLoading } = api.config.list.useQuery();
   const { data: runs, isLoading: runsLoading } = api.automation.listRuns.useQuery({ limit: 5 });
+  const { data: cardsData, isLoading: cardsLoading } = api.cards.list.useQuery({ pageSize: 5 });
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -43,16 +44,22 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
-                <Play className="h-4 w-4 text-white" />
+                <CreditCard className="h-4 w-4 text-white" />
               </div>
-              <h1 className="text-xl font-semibold text-zinc-100">Playwright Automation</h1>
+              <h1 className="text-xl font-semibold text-zinc-100">Card Generator</h1>
             </div>
             <div className="flex items-center gap-4">
               <nav className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
-                  <Link href="/configs" className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Configs
+                  <Link href="/cards" className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    Cards
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/settings" className="flex items-center gap-2">
+                    <Cog className="h-4 w-4" />
+                    Settings
                   </Link>
                 </Button>
                 <Button asChild variant="ghost" size="sm">
@@ -70,7 +77,19 @@ export default function Dashboard() {
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Quick Stats */}
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
+        <div className="grid gap-4 md:grid-cols-4 mb-8">
+          <Card className="bg-zinc-900/50 border-zinc-800">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-zinc-400">Virtual Cards</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {cardsLoading ? (
+                <Skeleton className="h-8 w-16 bg-zinc-800" />
+              ) : (
+                <p className="text-3xl font-bold text-violet-400">{cardsData?.total ?? 0}</p>
+              )}
+            </CardContent>
+          </Card>
           <Card className="bg-zinc-900/50 border-zinc-800">
             <CardHeader className="pb-2">
               <CardDescription className="text-zinc-400">Total Configs</CardDescription>
@@ -115,6 +134,57 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Cards Quick Access */}
+        <Card className="bg-zinc-900/50 border-zinc-800 mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-zinc-100">
+                <CreditCard className="h-5 w-5 text-violet-400" />
+                Virtual Cards
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                <Button asChild size="sm" variant="outline">
+                  <Link href="/cards">View All</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600">
+                  <Link href="/cards/new" className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Create Cards
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <CardDescription className="text-zinc-400">
+              Create and manage Airwallex virtual cards
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {cardsLoading ? (
+              <Skeleton className="h-16 w-full bg-zinc-800" />
+            ) : cardsData && cardsData.total > 0 ? (
+              <div className="flex items-center justify-between p-4 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                <div>
+                  <p className="text-2xl font-bold text-zinc-100">{cardsData.total} cards</p>
+                  <p className="text-sm text-zinc-500">
+                    {cardsData.cards.filter(c => c.status === 'active').length} active
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/cards">Manage Cards</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <CreditCard className="h-10 w-10 text-zinc-700 mx-auto mb-3" />
+                <p className="text-zinc-500 mb-3">No cards created yet</p>
+                <Button asChild size="sm" className="bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600">
+                  <Link href="/cards/new">Create your first cards</Link>
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Configurations */}

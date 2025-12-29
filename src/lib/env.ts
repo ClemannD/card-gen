@@ -32,6 +32,12 @@ const serverEnvSchema = z.object({
     .regex(/^\d+$/, 'PORT must be a number')
     .transform((val) => parseInt(val, 10))
     .default('3000'),
+
+  // Airwallex API Configuration (optional at build time, required at runtime for card operations)
+  AIRWALLEX_CLIENT_ID: z.string().default(''),
+  AIRWALLEX_API_KEY: z.string().default(''),
+  AIRWALLEX_ENV: z.enum(['demo', 'prod']).default('demo'),
+  AIRWALLEX_CARDHOLDER_ID: z.string().default(''),
 });
 
 /**

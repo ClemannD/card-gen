@@ -49,7 +49,7 @@ export default function RunDetailPage({
   const [isRerunDialogOpen, setIsRerunDialogOpen] = useState(false);
   const { data: run, isLoading } = api.automation.getRun.useQuery({ id });
 
-  const runScriptMutation = api.automation.runScript.useMutation({
+  const runScriptMutation = api.automation.run.useMutation({
     onSuccess: (newRun) => {
       setIsRerunDialogOpen(false);
       router.push(`/runs/${newRun.id}`);

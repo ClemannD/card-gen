@@ -41,3 +41,36 @@ model Run {
   @@index([configId])
   @@index([status])
 }
+
+// App Settings
+// ============
+
+/// Application settings stored in database (singleton)
+model Settings {
+  id                    String   @id @default("default")
+  airwallexClientId     String   @default("")
+  airwallexApiKey       String   @default("")
+  airwallexEnv          String   @default("demo") // demo or prod
+  airwallexCardholderId String   @default("")
+  updatedAt             DateTime @updatedAt
+}
+
+// Card Issuing Models
+// ===================
+
+/// Virtual card created via Airwallex API
+model Card {
+  id              String   @id @default(cuid())
+  airwallexCardId String   @unique // Airwallex's card ID
+  nickname        String // Card nickname/display name
+  cardNumber      String // Full card number (sensitive)
+  cvv             String // Card verification value (sensitive)
+  expiryMonth     Int // Card expiry month (1-12)
+  expiryYear      Int // Card expiry year (e.g., 2025)
+  nameOnCard      String // Cardholder name on card
+  status          String   @default("active") // active, frozen, cancelled
+  createdAt       DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}
