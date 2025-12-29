@@ -44,6 +44,8 @@ The script will automatically:
 
 **That's it!** The app is now running. Press `Ctrl+C` in the terminal to stop.
 
+**Troubleshooting:** If the window closes too quickly or you encounter errors, check the `run-log.txt` file in the project directory for detailed logs.
+
 **For production builds on Windows:** Double-click `build-windows.bat` to build and run in production mode.
 
 ### Manual Installation (All Platforms)
